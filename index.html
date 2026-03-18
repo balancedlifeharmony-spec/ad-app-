@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2-Minute App Generator | Business Site Creator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .timer {
+            font-size: 4em;
+            font-weight: bold;
+            color: #ffd700;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .input-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .url-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .url-input input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+
+        .url-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .url-input button {
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .url-input button:hover:not(:disabled) {
+            background: #5a67d8;
+        }
+
+        .url-input button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-bar.active {
+            display: block;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+            animation: progress 2s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .generated-app {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .generated-app.active {
+            display: block;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .app-title {
+            font-size: 2em;
+            color: #333;
+        }
+
+        .app-badge {
+            background: #48bb78;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .app-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .services-list {
+            list-style: none;
+        }
+
+        .services-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .services-list li:last-child {
+            border-bottom: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .action-btn.tertiary {
+            background: #f56565;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .app-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .url-input {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ 2-Minute App Generator</h1>
+            <p>Transform any business website into a mini-app in 2 minutes</p>
+        </div>
+
+        <div class="timer" id="timer">2:00</div>
+
+        <div class="input-section">
+            <div class="url-input">
+                <input type="url" id="websiteUrl" placeholder="Enter business website URL (e.g., https://example.com)" value="https://example.com">
+                <button id="generateBtn" onclick="generateApp()">Generate App</button>
+            </div>
+
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing website and generating your app...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            Failed to generate app. Please check the URL and try again.
+        </div>
+
+        <div class="generated-app" id="generatedApp">
+            <div class="app-header">
+                <h2 class="app-title" id="businessName">Business Name</h2>
+                <span class="app-badge">Generated in 2 min</span>
+            </div>
+            
+            <div class="app-content">
+                <div class="info-card">
+                    <h3>📋 Business Info</h3>
+                    <div class="info-item">
+                        <div class="info-label">Description</div>
+                        <div class="info-value" id="businessDescription">Loading business description...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Contact</div>
+                        <div class="info-value" id="businessContact">
+                            📞 <span id="businessPhone">(555) 123-4567</span><br>
+                            ✉️ <span id="businessEmail">info@business.com</span><br>
+                            📍 <span id="businessAddress">123 Business St, City, State</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Hours</div>
+                        <div class="info-value" id="businessHours">
+                            Mon-Fri: 9am - 6pm<br>
+                            Sat: 10am - 4pm<br>
+                            Sun: Closed
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>🚀 Services & Products</h3>
+                    <ul class="services-list" id="servicesList">
+                        <li>Service 1 - Description and pricing</li>
+                        <li>Service 2 - Description and pricing</li>
+                        <li>Service 3 - Description and pricing</li>
+                        <li>Service 4 - Description and pricing</li>
+                    </ul>
+                    
+                    <div class="info-item" style="margin-top: 20px;">
+                        <div class="info-label">Special Offers</div>
+                        <div class="info-value" id="specialOffers">
+                            • 20% off first service<br>
+                            • Free consultation<br>
+                            • Seasonal discounts available
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn primary" onclick="openOriginalSite()">Visit Original Site</button>
+                <button class="action-btn secondary" onclick="downloadApp()">Download App</button>
+                <button class="action-btn tertiary" onclick="shareApp()">Share App</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timerInterval;
+        let timeLeft = 120; // 2 minutes in seconds
+        let generatedData = null;
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft < 0) {
+                    timeLeft = 0;
+                    clearInterval(timerInterval);
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        async function generateApp() {
+            const url = document.getElementById('websiteUrl').value;
+            const generateBtn = document.getElementById('generateBtn');
+            const progressBar = document.getElementById('progressBar');
+            const loading = document.getElementById('loading');
+            const generatedApp = document.getElementById('generatedApp');
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (!url) {
+                alert('Please enter a website URL');
+                return;
+            }
+
+            // Reset UI
+            errorMessage.classList.remove('active');
+            generatedApp.classList.remove('active');
+            generateBtn.disabled = true;
+            progressBar.classList.add('active');
+            loading.classList.add('active');
+
+            // Start timer
+            timeLeft = 120;
+            startTimer();
+
+            try {
+                // Simulate website analysis and data extraction
+                const businessData = await analyzeWebsite(url);
+                
+                // Update the generated app with real data
+                updateAppContent(businessData);
+                
+                // Show the generated app
+                generatedApp.classList.add('active');
+                
+                // Store generated data
+                generatedData = businessData;
+
+            } catch (error) {
+                console.error('Generation error:', error);
+                errorMessage.classList.add('active');
+            } finally {
+                // Cleanup
+                generateBtn.disabled = false;
+                progressBar.classList.remove('active');
+                loading.classList.remove('active');
+                clearInterval(timerInterval);
+            }
+        }
+
+        async function analyzeWebsite(url) {
+            // This is a simulation of website analysis
+            // In a real app, you would use APIs or web scraping
+            
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // Generate business data based on URL
+                    const domain = extractDomain(url);
+                    const businessData = generateBusinessData(domain);
+                    resolve(businessData);
+                }, 3000); // Simulate processing time
+            });
+        }
+
+        function extractDomain(url) {
+            try {
+                const urlObj = new URL(url);
+                return urlObj.hostname.replace('www.', '').split('.')[0];
+            } catch {
+                return 'business';
+            }
+        }
+
+        function generateBusinessData(domain) {
+            // This is mock data generation
+            // In production, you'd scrape actual website data
+            
+            const businesses = {
+                'example': {
+                    name: 'Example Business Solutions',
+                    description: 'Leading provider of innovative business solutions and consulting services.',
+                    phone: '(555) 123-4567',
+                    email: 'contact@example.com',
+                    address: '123 Innovation Drive, Silicon Valley, CA 94025',
+                    services: [
+                        'Business Consulting - Custom solutions for growth',
+                        'Digital Transformation - $5000/project',
+                        'Market Analysis - Starting at $1000',
+                        'Strategic Planning - Custom pricing'
+                    ],
+                    offers: [
+                        '20% off first consultation',
+                        'Free initial assessment',
+                        'Monthly maintenance packages available'
+                    ]
+                },
+                'restaurant': {
+                    name: 'Gourmet Delights Restaurant',
+                    description: 'Fine dining experience with authentic cuisine and exceptional service.',
+                    phone: '(555) 987-6543',
+                    email: 'reservations@gourmetdelights.com',
+                    address: '456 Culinary Ave, Foodie City, FC 12345',
+                    services: [
+                        'Lunch Menu - 11am-3pm, $15-30',
+                        'Dinner Menu - 5pm-10pm, $25-60',
+                        'Private Events - Custom catering',
+                        'Wine Tasting - $40/person'
+                    ],
+                    offers: [
+                        'Happy Hour 4-6pm: 50% off appetizers',
+                        'Birthday special: Free dessert',
+                        'First-time diners: 15% off'
+                    ]
+                },
+                'fitness': {
+                    name: 'Peak Performance Gym',
+                    description: 'State-of-the-art fitness facility with expert trainers and modern equipment.',
+                    phone: '(555) 246-8135',
+                    email: 'info@peakfitness.com',
+                    address: '789 Wellness Blvd, Fitness City, FC 67890',
+                    services: [
+                        'Gym Membership - $49.99/month',
+                        'Personal Training - $60/session',
+                        'Yoga Classes - $20/class',
+                        'Nutrition Planning - $150/session'
+                    ],
+                    offers: [
+                        'First week free trial',
+                        'No enrollment fee this month',
+                        'Student discount: 20% off'
+                    ]
+                }
+            };
+
+            // Return matching business or default
+            return businesses[domain] || {
+                name: domain.charAt(0).toUpperCase() + domain.slice(1) + ' Business',
+                description: `Professional services and solutions from ${domain}. Quality products and exceptional customer service.`,
+                phone: '(555) 000-0000',
+                email: `info@${domain}.com`,
+                address: '123 Business Street, City, State 12345',
+                services: [
+                    'Professional Service 1 - Custom quote',
+                    'Professional Service 2 - Contact for pricing',
+                    'Professional Service 3 - Package deals available',
+                    'Professional Service 4 - Consultation required'
+                ],
+                offers: [
+                    'Contact for current promotions',
+                    'Ask about our loyalty program',
+                    'Seasonal specials available'
+                ]
+            };
+        }
+
+        function updateAppContent(data) {
+            document.getElementById('businessName').textContent = data.name;
+            document.getElementById('businessDescription').textContent = data.description;
+            document.getElementById('businessPhone').textContent = data.phone;
+            document.getElementById('businessEmail').textContent = data.email;
+            document.getElementById('businessAddress').textContent = data.address;
+
+            // Update services list
+            const servicesList = document.getElementById('servicesList');
+            servicesList.innerHTML = '';
+            data.services.forEach(service => {
+                const li = document.createElement('li');
+                li.textContent = service;
+                servicesList.appendChild(li);
+            });
+
+            // Update offers
+            const offersElement = document.getElementById('specialOffers');
+            offersElement.innerHTML = '';
+            data.offers.forEach(offer => {
+                offersElement.innerHTML += `• ${offer}<br>`;
+            });
+        }
+
+        function openOriginalSite() {
+            const url = document.getElementById('websiteUrl').value;
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+
+        function downloadApp() {
+            if (!generatedData) return;
+            
+            const appData = JSON.stringify(generatedData, null, 2);
+            const blob = new Blob([appData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'generated-app.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('App data downloaded successfully!');
+        }
+
+        function shareApp() {
+            if (navigator.share && generatedData) {
+                navigator.share({
+                    title: generatedData.name,
+                    text: `Check out this business: ${generatedData.name}`,
+                    url: document.getElementById('websiteUrl').value
+                }).catch(() => {
+                    alert('Share cancelled or failed');
+                });
+            } else {
+                alert('Copy this link to share: ' + document.getElementById('websiteUrl').value);
+            }
+        }
+
+        // Add sample URL on page load
+        window.onload = function() {
+            document.getElementById('websiteUrl').value = 'https://example-restaurant.com';
+        };
+    </script>
+</body>
+</html>
